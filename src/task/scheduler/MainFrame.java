@@ -47,17 +47,7 @@ public class MainFrame extends javax.swing.JFrame {
         setButtons();
         handleDatabse();
         setDays();
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation((dim.width - 20) - this.getSize().width, 60);
-        if (isAvailable("canMove")) {
-            canMove = true;
-            jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/arrows.png")));
-        }
-        if (isAvailable("canTop")) {
-            canTop = true;
-            setAlwaysOnTop(true);
-            jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/thumbtack.png")));
-        }
+        setFrameLocation();
     }
 
     @SuppressWarnings("unchecked")
@@ -115,6 +105,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setIconImage(Toolkit.getDefaultToolkit().getImage("/images/cal.ico"));
         setUndecorated(true);
         setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -123,6 +114,11 @@ public class MainFrame extends javax.swing.JFrame {
             }
             public void windowLostFocus(java.awt.event.WindowEvent evt) {
                 formWindowLostFocus(evt);
+            }
+        });
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
 
@@ -1029,6 +1025,10 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jLabel3MouseClicked
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+
+    }//GEN-LAST:event_formWindowOpened
+
     public static void main(String args[]) {
         try {
             UIManager.setLookAndFeel(new FlatMacLightLaf());
@@ -1069,11 +1069,11 @@ public class MainFrame extends javax.swing.JFrame {
 
     }
 
-    public void refresh(){
+    public void refresh() {
         handleDatabse();
         setDays();
     }
-    
+
     private void setDays() {
         int year = currentYearMonth.getYear();
         int month = currentYearMonth.getMonth().getValue();
@@ -1147,7 +1147,7 @@ public class MainFrame extends javax.swing.JFrame {
         for (int i = 0; i < task_dates.size(); i++) {
             try {
                 Date date = sdf.parse(task_dates.get(i).getDate());
-                LocalDate dateAsLocalDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();;
+                LocalDate dateAsLocalDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 if (check_date.isEqual(dateAsLocalDate)) {
                     return true;
                 }
@@ -1188,11 +1188,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private boolean isAvailable(String name) {
         File f = new File(name + ".seb");
-        if (f.exists()) {
-            return true;
-        } else {
-            return false;
-        }
+        return f.exists();
     }
 
     private void create(String name) {
@@ -1213,6 +1209,23 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }
 
+
+
+    private void setFrameLocation() {
+             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation((dim.width - 20) - this.getSize().width, 60);
+        if (isAvailable("canMove")) {
+            canMove = true;
+            jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/arrows.png")));
+        }
+        if (isAvailable("canTop")) {
+            canTop = true;
+            setAlwaysOnTop(true);
+            jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/thumbtack.png")));
+        }
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/cal.png")));
+        jPanel2.requestFocus();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

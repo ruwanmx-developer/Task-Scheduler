@@ -1,38 +1,23 @@
 package task.scheduler;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
-public class TaskFrame extends javax.swing.JFrame {
+public class TaskFrame extends javax.swing.JDialog {
 
     LocalDate currentDate = LocalDate.now();
     int lastX, lastY;
+    
     String dateInst = "";
 
     ArrayList<Task> task_dates = new ArrayList<>();
@@ -44,14 +29,15 @@ public class TaskFrame extends javax.swing.JFrame {
     Color EMPTY = new java.awt.Color(255, 255, 255);
     Connection conn = new DBConnection().getConnection();
     MainFrame mf;
+    boolean canMove = false;
 
     public TaskFrame(String date, MainFrame mf) {
 
         initComponents();
         this.mf = mf;
         dateInst = date;
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation((dim.width - 553) - this.getSize().width, 60);
+        
+        setFrameLocation();
         getData(date);
         jList1.requestFocus();
     }
@@ -67,9 +53,8 @@ public class TaskFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
-        setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -192,16 +177,21 @@ public class TaskFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
-        lastX = evt.getXOnScreen();
-        lastY = evt.getYOnScreen();
+        if (canMove) {
+            lastX = evt.getXOnScreen();
+            lastY = evt.getYOnScreen();
+        }
     }//GEN-LAST:event_jPanel1MousePressed
 
     private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
-        int x = evt.getXOnScreen();
-        int y = evt.getYOnScreen();
-        setLocation(getLocationOnScreen().x + x - lastX, getLocationOnScreen().y + y - lastY);
-        lastX = x;
-        lastY = y;
+        if (canMove) {
+            int x = evt.getXOnScreen();
+
+            int y = evt.getYOnScreen();
+            setLocation(getLocationOnScreen().x + x - lastX, getLocationOnScreen().y + y - lastY);
+            lastX = x;
+            lastY = y;
+        }
     }//GEN-LAST:event_jPanel1MouseDragged
 
     private void jPanel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseClicked
@@ -303,6 +293,14 @@ public class TaskFrame extends javax.swing.JFrame {
         return result.toString().trim();
     }
 
+    private void setFrameLocation() {
+        System.out.println(mf.getX());
+        if ((mf.getX() - getWidth() - 20) > 0) {
+            setLocation(mf.getX() - getWidth() - 10, mf.getY());
+        } else {
+            setLocation(mf.getX() + mf.getWidth() + 10, mf.getY());
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
